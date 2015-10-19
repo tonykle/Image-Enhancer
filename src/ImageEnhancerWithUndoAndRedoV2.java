@@ -4,7 +4,7 @@
 // The user can also choose to save the filtered image.
 
 // This is based on the "SaveImage.java" tutorial demo from Oracle.com.
- 
+
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -52,13 +52,13 @@ public class ImageEnhancerWithUndoAndRedoV2 extends Component implements ActionL
     int h;
     byte[] lut0, lut3, lut4, lut5, lut6, lut7;
     LookupOp op0, op3, op4, op5, op6, op7;
-    
+
     static JPopupMenu popup;
-    
+
     ImageStack undoStack; // instance of undo stack
     ImageStack redoStack; // instance of redo stack
     // Here, you should declare two variables to hold instances of your stack class, with one for Undo and one for Redo.
-    
+
     /**
      * ==================================================================> NEW FEATURES FOR UI TEST
      */
@@ -79,7 +79,7 @@ public class ImageEnhancerWithUndoAndRedoV2 extends Component implements ActionL
         0.1f, 0.2f, 0.1f,
         0.1f, 0.1f, 0.1f
     };
-    
+
     /**
      * ==================================================================> NEW FEATURES FOR UI TEST
      */
@@ -88,19 +88,11 @@ public class ImageEnhancerWithUndoAndRedoV2 extends Component implements ActionL
    	 	this();
    	 	this.undoItem = undoItem;
    	 	this.redoItem = redoItem;
-   	    this.undoItem.setEnabled(false); // undo menu item initially grayed out
-   	    this.redoItem.setEnabled(false); // redo menu item initially grayed out
-   	    
-
-   	 	/**
-   	     * ==================================================================> STUDENT SHOULD DO THIS
-   	     * Add code to initialize the state of the menu items undoItem and redoItem, so that they are disabled
-   	     * using the JMenuItem method setEnabled(boolean).  Your code should go here :
-   	     */
-   	 	
-   	 	// end of your code for initializing menu items' state.
+   	  this.undoItem.setEnabled(false); // undo menu item initially grayed out
+   	  this.redoItem.setEnabled(false); // redo menu item initially grayed out
+   	 	// end of code for initializing menu items' state.
     }
-    
+
     public ImageEnhancerWithUndoAndRedoV2() { // Version of the constructor taking 0 arguments.
         try {
             biTemp = ImageIO.read(new File(startingImage));
@@ -114,12 +106,12 @@ public class ImageEnhancerWithUndoAndRedoV2 extends Component implements ActionL
             gWorking.drawImage(biOriginal, 0, 0, null);
             biFiltered = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
             gFiltered = biFiltered.getGraphics();
-            
+
         } catch (IOException e) {
             System.out.println("Image could not be read: "+startingImage);
             System.exit(1);
         }
-        
+
         // Add code to create empty stack instances for the Undo stack and the Redo stack.
         // Put your code for this here:
         undoStack = new ImageStack();
@@ -140,18 +132,18 @@ public class ImageEnhancerWithUndoAndRedoV2 extends Component implements ActionL
     		}
     		return si;
     }
-	
+
     /**
      * ==================================================================> NEW FEATURES FOR UI TEST
      */
 	public BufferedImage getBufferedImage() {
 		return biWorking;
 	}
-	
+
 	public JPopupMenu getPopupMenu() {
 		return popup;
 	}
-	
+
     public Dimension getPreferredSize() {
         return new Dimension(w, h);
     }
@@ -163,16 +155,16 @@ public class ImageEnhancerWithUndoAndRedoV2 extends Component implements ActionL
     public void paint(Graphics g) {
         g.drawImage(biWorking, 0, 0, null);
     }
-    
+
     private LookupOp getOriginalOp() {
         byte[] lut = new byte[256];
         for (int j=0; j<256; j++) {
-            lut[j] = (byte)j; 
+            lut[j] = (byte)j;
         }
-        ByteLookupTable blut = new ByteLookupTable(0, lut); 
+        ByteLookupTable blut = new ByteLookupTable(0, lut);
         return new LookupOp(blut, null);
     }
-    
+
     int lastOp;
     public void filterImage() {
     	if (undoStack.isEmpty()) {
@@ -186,9 +178,9 @@ public class ImageEnhancerWithUndoAndRedoV2 extends Component implements ActionL
            if (lut0==null) {
                 lut0 = new byte[256];
                 for (int j=0; j<256; j++) {
-                    lut0[j] = (byte)(j*9.0 / 10.0); 
+                    lut0[j] = (byte)(j*9.0 / 10.0);
                 }
-                ByteLookupTable blut0 = new ByteLookupTable(0, lut0); 
+                ByteLookupTable blut0 = new ByteLookupTable(0, lut0);
                 op0 = new LookupOp(blut0, null);
             }
             op = op0;
@@ -205,58 +197,58 @@ public class ImageEnhancerWithUndoAndRedoV2 extends Component implements ActionL
             if (lut3==null) {
                 lut3 = new byte[256];
                 for (int j=0; j<256; j++) {
-                    lut3[j] = (byte)(256-j); 
+                    lut3[j] = (byte)(256-j);
                 }
-                ByteLookupTable blut3 = new ByteLookupTable(0, lut3); 
+                ByteLookupTable blut3 = new ByteLookupTable(0, lut3);
                 op3 = new LookupOp(blut3, null);
             }
             op = op3;
             break;
- 
+
         case 4 : /* threshold RGB values. */
            if (lut4==null) {
                 lut4 = new byte[256];
                 for (int j=0; j<256; j++) {
-                    lut4[j] = (byte)(j < 128 ? 0: 200); 
+                    lut4[j] = (byte)(j < 128 ? 0: 200);
                 }
-                ByteLookupTable blut4 = new ByteLookupTable(0, lut4); 
+                ByteLookupTable blut4 = new ByteLookupTable(0, lut4);
                 op4 = new LookupOp(blut4, null);
-                
+
             }
             op = op4;
             break;
-            
+
         case 5 : /* undo */
             if (lut5==null) {
                  lut5 = new byte[256];
                  for (int j=0; j<256; j++) {
-                     lut5[j] = (byte)(j < 128 ? 0: 200); 
+                     lut5[j] = (byte)(j < 128 ? 0: 200);
                  }
-                 ByteLookupTable blut5 = new ByteLookupTable(0, lut5); 
+                 ByteLookupTable blut5 = new ByteLookupTable(0, lut5);
                  op5 = new LookupOp(blut5, null);
              }
              op = op5;
              break;
-             
+
         case 6 : /* redo*/
             if (lut6==null) {
                  lut6 = new byte[256];
                  for (int j=0; j<256; j++) {
-                     lut6[j] = (byte)(j < 128 ? 0: 200); 
+                     lut6[j] = (byte)(j < 128 ? 0: 200);
                  }
-                 ByteLookupTable blut6 = new ByteLookupTable(0, lut6); 
+                 ByteLookupTable blut6 = new ByteLookupTable(0, lut6);
                  op6 = new LookupOp(blut6, null);
              }
              op = op6;
              break;
-             
+
         case 7 : /* drop redo item*/
             if (lut7==null) {
                  lut7 = new byte[256];
                  for (int j=0; j<256; j++) {
-                     lut7[j] = (byte)(j < 128 ? 0: 200); 
+                     lut7[j] = (byte)(j < 128 ? 0: 200);
                  }
-                 ByteLookupTable blut7 = new ByteLookupTable(0, lut7); 
+                 ByteLookupTable blut7 = new ByteLookupTable(0, lut7);
                  op7 = new LookupOp(blut7, null);
              }
              op = op7;
@@ -264,27 +256,19 @@ public class ImageEnhancerWithUndoAndRedoV2 extends Component implements ActionL
 
         default:return;
         }
-              
+
         /* Rather than directly drawing the filtered image to the
          * destination, we filter it into a new image first, then that
-         * filtered image is ready for writing out or painting. 
+         * filtered image is ready for writing out or painting.
          */
-        
+
         // user chose (0-4) / a filter
         if(opIndex >= 0 && opIndex <= 4) {
-        	// MAKE UNDO MENU OPTION HERE
-    			/**
-    			 * ==================================================================> STUDENT SHOULD DO THIS
-    			 *   Write code to save the current state for undoing and dispose of any redoable actions.
-    			 */      
-        	 
-        	    /* End of student's code to handle manipulation of Undo and Redo stacks when an image operation is performed. */
-        	
-        	redoStack.clear();	
-    		biFiltered = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-    		undoStack.push(biFiltered); // adding the filtered image to the stack
-    		op.filter(biWorking, biFiltered);
-        } else if (opIndex == 5) { // user clicked undo 	
+          redoStack.clear();
+      		biFiltered = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+      		undoStack.push(biFiltered); // adding the filtered image to the stack
+      		op.filter(biWorking, biFiltered);
+        } else if (opIndex == 5) { // user clicked undo
         	redoStack.push(undoStack.pop());
         	biFiltered = undoStack.peek();
         	// dropping original to get undoStack size to 0
@@ -298,21 +282,21 @@ public class ImageEnhancerWithUndoAndRedoV2 extends Component implements ActionL
         	redoStack.pop();
         	biFiltered = undoStack.peek();
         }
-        
-        // greys/ungreys redo menu option 
+
+        // greys/ungreys redo menu option
         if (!redoStack.isEmpty()) {
         	redoItem.setEnabled(true);
         } else {
         	redoItem.setEnabled(false);
         }
-        
-        // greys/ungreys undo menu option 
+
+        // greys/ungreys undo menu option
         if (undoStack.isEmpty()) {
         	undoItem.setEnabled(false);
         } else {
         	undoItem.setEnabled(true);
         }
-        
+
         gWorking.drawImage(biFiltered, 0, 0, null); // this draws the image
         printNumberOfElementsInBothStack();
     }
@@ -343,7 +327,7 @@ public class ImageEnhancerWithUndoAndRedoV2 extends Component implements ActionL
             }
         }
     }
-    
+
     public void actionPerformed(ActionEvent e) {
         try {
             JComboBox cb = (JComboBox)e.getSource();
@@ -371,7 +355,7 @@ public class ImageEnhancerWithUndoAndRedoV2 extends Component implements ActionL
                     try {
                          ImageIO.write(biFiltered, format, saveFile);
                     } catch (IOException ex) {
-                    	
+
                     }
 
                 }
@@ -384,59 +368,45 @@ public class ImageEnhancerWithUndoAndRedoV2 extends Component implements ActionL
             int index = i.intValue();
             System.out.println(filterCommand);
             setOpIndex(index);
-            filterImage(); 
+            filterImage();
             repaint();
         }
     }
 
     public static void main(String s[]) {
-        /**
-         * ==================================================================> NEW FEATURES FOR UI TEST
-         */
     		new ImageEnhancerWithUndoAndRedoV2().run();
     }
 
     public void run() {
-        JFrame f = new JFrame("ImageEnhancer WITH Undo or Redo by Tony Le"); // Students should update this.
+        JFrame f = new JFrame("ImageEnhancer WITH Undo or Redo by Tony Le");
         f.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {System.exit(0);}
         });
-        
-        /**
-         * ==================================================================> STUDENT SHOULD DO THIS
-         * Write code to create the two new menu items for Undo and Redo.
-         * Call the new constructor for class ImageEnhancerV2, passing in two arguments:
-         * the Undo menu item and the Redo menu item.
-         */
-        // Add code to create the new menu items here.
-        
-        // Next, replace this call to the 0-argument constructor by a call to the new 2-argument constructor,
-        // using as arguments the two new menu items.
-        si = new ImageEnhancerWithUndoAndRedoV2(); 
-        
+        si = new ImageEnhancerWithUndoAndRedoV2();
+
         // menu items for undo / redo / drop redo
         JMenuItem undoIt = new JMenuItem("5: Undo");
         JMenuItem redoIt = new JMenuItem("6: Redo");
         JMenuItem dropRedo = new JMenuItem("7: Drop this Redo item");
-        si = new ImageEnhancerWithUndoAndRedoV2(undoIt, redoIt); 
+        si = new ImageEnhancerWithUndoAndRedoV2(undoIt, redoIt);
         undoIt.addActionListener(si);
         redoIt.addActionListener(si);
         dropRedo.addActionListener(si);
-        
+
         f.add("Center", si);
         formats = new JComboBox(si.getFormats());
         formats.setActionCommand("Formats");
         formats.addActionListener(si);
         JPanel panel = new JPanel();
-        panel.add(new JLabel("Save As"));   
+        panel.add(new JLabel("Save As"));
         panel.add(formats);
         f.add("South", panel);
         f.pack();
         f.setVisible(true);
-        
+
         // We create the popup menu in the following.
         popup = new JPopupMenu();
-  
+
         JMenuItem menuItem = new JMenuItem("0: Darken by 10%");
         menuItem.addActionListener(si);
         popup.add(menuItem);
@@ -452,25 +422,17 @@ public class ImageEnhancerWithUndoAndRedoV2 extends Component implements ActionL
         menuItem = new JMenuItem("4: RGB Thresholds at 128");
         menuItem.addActionListener(si);
         popup.add(menuItem);
-        
+
         // pop up for undo and redo menu items
         popup.add(undoIt);
         popup.add(redoIt);
         // pop up for drop redo menu item
         popup.add(dropRedo);
-        
-        /**
-         * ==================================================================> STUDENT SHOULD DO THIS
-         */
-        // Add each of the two new menu items to the popup menu.
-        // Also, add the action listener to each item, just as for the other items above.
-        // end of your code for this.
     }
-    
+
     private void printNumberOfElementsInBothStack() {
     	// Uncomment this code that prints out the numbers of elements in each of the two stacks (Undo and Redo):
         System.out.println("Undo stack has " + undoStack.getSize() + " elements.");
         System.out.println("Redo stack has " + redoStack.getSize() + " elements.");
     }
 }
-
