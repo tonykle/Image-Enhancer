@@ -8,5 +8,5 @@ Washington campus, but any other image may be used. This is based on the ```Save
 2. Clone this repository by navigating to where you want the repository to be and entering the following command ```git clone https://github.com/tonykle/Image-Enhancer.git``` into terminal.
 3. Navigate to the repository.
 4. Optionally replace the ```Aeroplane-view-of-UW.png``` file with an image file of your own.
-5. Open up the project in your favorite IDE such as ```Eclipise```.
+5. Open up the project in your favorite IDE such as ```Eclipse```.
 6. Run ```ImageStack.java``` and select filters to apply to your image.
